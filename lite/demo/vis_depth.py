@@ -90,13 +90,17 @@ def img_save_and_viz(image, result, output_path, seg_dir):
     depth_map = seg_logits.data.float().numpy()[0]  ## H x W
     image_name = os.path.basename(output_path)
 
-    mask_path = os.path.join(
-        seg_dir,
-        image_name.replace(".png", ".npy")
-        .replace(".jpg", ".npy")
-        .replace(".jpeg", ".npy"),
-    )
-    mask = np.load(mask_path)
+    if seg_dir is not None:
+        mask_path = os.path.join(
+            seg_dir,
+            os.path.basename(output_path)
+            .replace(".png", ".npy")
+            .replace(".jpg", ".npy")
+            .replace(".jpeg", ".npy"),
+        )
+        mask = np.load(mask_path)
+    else:
+        mask = np.ones_like(normal_map)
 
     ##-----------save depth_map to disk---------------------
     save_path = (
